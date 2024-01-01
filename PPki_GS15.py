@@ -105,19 +105,6 @@ def recuperer_document(nom_document, private_key):
 # Dictionnaire pour stocker les informations des utilisateurs
 utilisateurs = {}
 
-# Fonction pour inscrire un utilisateur
-#def inscrire_utilisateur(public_key, private_key):
-   # identifiant = input("Entrez votre identifiant (email, numéro de téléphone, etc.) : ")
-  #  # Vous pouvez stocker cet identifiant comme vous le souhaitez, par exemple dans un dictionnaire
- #   utilisateur = {
-     #   'identifiant': identifiant,
-    #    'public_key': public_key,
-   #     'private_key': private_key
-   # }
- #   print(f"Utilisateur {identifiant} inscrit avec succès!")
-  #  return utilisateur
-#
-# 2. Ajouter une fonction pour créer un utilisateur
 def creer_utilisateur(nom_utilisateur):
     if nom_utilisateur not in utilisateurs:
         public_key, private_key = generate_key_pair()  # Utilisez votre fonction existante pour générer une paire de clés
@@ -237,7 +224,7 @@ def envoyer_message_asynchrone(message, public_key_destinataire):
 
 # Fonction pour déchiffrer un message avec la clé privée du destinataire
 def dechiffrer_message(message_chiffre, private_key):
-    # Utilisez votre fonction existante pour déchiffrer le message avec la clé privée
+    #  pour déchiffrer le message avec la clé privée
     message_dechiffre = decrypt_message(message_chiffre, private_key)
     return message_dechiffre
 
@@ -247,7 +234,7 @@ depot_certifications = {}  # Dictionnaire pour stocker les certificats avec une 
 # Fonctions pour l'autorité de confiance :
 # Signalisation d'un certificat avec une date de validité :
 def signer_certificat_avec_validite(identifiant, private_key, duree_validite_jours=365):
-    signature = sign_message(identifiant, private_key)  # Utilisez votre fonction existante pour signer.
+    signature = sign_message(identifiant, private_key)  
     
     # Calculer la date d'expiration du certificat.
     date_expiration = datetime.now() + timedelta(days=duree_validite_jours)
@@ -272,7 +259,7 @@ def verifier_certificat_avec_validite(signature, identifiant, public_key):
         return False
     
     # Vérifier la validité du certificat en vérifiant la signature.
-    is_valid_signature = verify_signature(signature, identifiant, public_key)  # Utilisez votre fonction existante.
+    is_valid_signature = verify_signature(signature, identifiant, public_key)  # Utilisation d'une fonction existante.
     
     # Vérifier la date d'expiration.
     is_not_expired = datetime.now() <= certificat['date_expiration']
@@ -290,7 +277,7 @@ def prove_knowledge(secret):
 
 def verify_knowledge(proof, secret):
     r, z = proof
-    g = 2  # Utilisez le même générateur que celui utilisé pour la preuve
+    g = 2  # Utilisation du même générateur que celui utilisé pour la preuve
     return z == (r ** 2) * (g ** secret)
 
 
