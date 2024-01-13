@@ -1,5 +1,6 @@
 import random
 import os
+import serpent
 from datetime import datetime, timedelta
 
 def is_prime(num):
@@ -137,8 +138,6 @@ def envoyer_message_asynchrone(nom_utilisateur_destinataire, message):
 
 
 
-
-
 # Fonction de hachage SHA-256
 def sha256(message):
     # Constantes initiales pour SHA-256
@@ -249,7 +248,17 @@ def signer_certificat_avec_validite(identifiant, private_key, duree_validite_jou
     
     return certificat
 
+def string_to_hexadecimal(input_string):
+    # Utilisez la méthode encode() pour convertir la chaîne en bytes
+    # Utilisez ensuite la fonction hex() pour obtenir la représentation hexadécimale
+    hexadecimal_result = ''.join(hex(ord(char))[2:] for char in input_string)
+    return hexadecimal_result
 
+def hexadecimal_to_string(hexadecimal_string):
+    # Utilisez bytes.fromhex() pour obtenir un objet bytes à partir de la chaîne hexadécimale
+    # Utilisez ensuite decode() pour obtenir la chaîne de caractères normale
+    string_result = bytes.fromhex(hexadecimal_string).decode('utf-8')
+    return string_result
 # Vérification un certificat :
 def verifier_certificat_avec_validite(signature, identifiant, public_key):
     # Récupérer le certificat depuis le dépôt.
@@ -298,6 +307,7 @@ while True:
     print("->55<- Verifier les documents dans le coffre-fort.")
     print("->6<- Envoyer un message (asynchrone).")
     print("->7<- Demander une preuve de connaissance.")
+    print("->8<- Chiffrer/Déchiffrer avec serpent.")
     print("->0<- I WANT IT ALL !! I WANT IT NOW !! SecCom from scratch?")
     
     choice = input("Votre choix (0-7): ")
@@ -423,7 +433,27 @@ while True:
             print("La preuve de connaissance a échoué.")
 
 
+    elif choice == '8':
+        nom_destinataire = input("Entrez le nom de l'utilisateur destinataire: ")
+        if nom_destinataire not in utilisateurs:
+            print("Cet utilisateur n'existe pas. Veuillez le créer d'abord.")
+        else:
+            plain_text = string_to_hexadecimal(input("Ecrire le message à chiffrer avec serpent !"))
+            secrete_key = string_to_hexadecimal(input("Ecrire la clé secrète !"))
 
+            plain_text = serpent.convertToBitstring(plain_text, 128)
+            bitsInKey = serpent.keyLengthInBitsOf(secrete_key)
+            rawKey = serpent.convertToBitstring(secrete_key, bitsInKey)
+            userKey = serpent.makeLongKey(rawKey)
+
+            cipher_text = serpent.encrypt(plain_text, userKey)
+            print("Serpent cipher_text --> ", cipher_text)
+
+            # Déchiffrez le message2
+            message_dechiffre = serpent.decrypt(cipher_text, userKey)
+            print("Serpent plain_text --> ", message_dechiffre)
+            bytes_obj = bytes.fromhex(message_dechiffre)
+            print("Original message --> ", bytes_obj.decode('utf-8'))
 
     elif choice == '0':
         while True:
